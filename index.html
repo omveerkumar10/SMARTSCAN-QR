@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Our CSS File -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background Glow Effect -->
+  <div class="bg-glow"></div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <div class="hero">
+    <div class="badge">✦ QR Code Generator</div>
+    <h1>Generate QR Codes<br/>Instantly</h1>
+    <p class="subtitle">Create QR codes for URLs, text, contact cards, email — free &amp; no signup.</p>
+  </div>
+
+  <!-- ===== MAIN CONTAINER ===== -->
+  <div class="container">
+
+    <!-- LEFT CARD: Input Panel -->
+    <div class="card">
+      <div class="card-label"><span class="dot"></span>Input</div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('url', this)">URL</button>
+        <button class="tab" onclick="switchTab('text', this)">Text</button>
+        <button class="tab" onclick="switchTab('email', this)">Email</button>
+        <button class="tab" onclick="switchTab('vcard', this)">vCard</button>
+      </div>
+
+      <!-- URL Tab -->
+      <div id="tab-url" class="tab-content active">
+        <div class="input-group">
+          <label>Website URL</label>
+          <input type="url" id="url-input" placeholder="https://example.com" />
+        </div>
+      </div>
+
+      <!-- Text Tab -->
+      <div id="tab-text" class="tab-content">
+        <div class="input-group">
+          <label>Plain Text / Message</label>
+          <textarea id="text-input" placeholder="Type your message here..."></textarea>
+        </div>
+      </div>
+
+      <!-- Email Tab -->
+      <div id="tab-email" class="tab-content">
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="email-to" placeholder="someone@example.com" />
+        </div>
+        <div class="input-group">
+          <label>Subject</label>
+          <input type="text" id="email-subject" placeholder="Hello!" />
+        </div>
+        <div class="input-group">
+          <label>Body</label>
+          <textarea id="email-body" placeholder="Your message..."></textarea>
+        </div>
+      </div>
+
+      <!-- vCard Tab -->
+      <div id="tab-vcard" class="tab-content">
+        <div class="row">
+          <div class="input-group">
+            <label>First Name</label>
+            <input type="text" id="vc-fname" placeholder="Rahul" />
+          </div>
+          <div class="input-group">
+            <label>Last Name</label>
+            <input type="text" id="vc-lname" placeholder="Sharma" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Phone</label>
+          <input type="tel" id="vc-phone" placeholder="+91 98765 43210" />
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="vc-email" placeholder="rahul@example.com" />
+        </div>
+        <div class="input-group">
+          <label>Company</label>
+          <input type="text" id="vc-company" placeholder="Company Name" />
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <hr class="divider" />
+      <div class="card-label"><span class="dot"></span>Customize</div>
+
+      <!-- Size Slider -->
+      <div class="input-group">
+        <label>QR Size</label>
+        <div class="size-row">
+          <input type="range" id="qr-size" min="128" max="400" value="220" step="4"
+            oninput="document.getElementById('size-val').textContent = this.value + 'px'" />
+          <span class="size-val" id="size-val">220px</span>
+        </div>
+      </div>
+
+      <!-- Color Pickers -->
+      <div class="row">
+        <div class="input-group">
+          <label>Foreground Color</label>
+          <div class="color-row">
+            <input type="color" id="fg-color" value="#000000" />
+            <input type="text" id="fg-hex" value="#000000" oninput="syncColor('fg')" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Background Color</label>
+          <div class="color-row">
+            <input type="color" id="bg-color" value="#ffffff" />
+            <input type="text" id="bg-hex" value="#ffffff" oninput="syncColor('bg')" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Correction -->
+      <div class="input-group">
+        <label>Error Correction Level</label>
+        <select id="ecl">
+          <option value="L">Low (L) — 7%</option>
+          <option value="M" selected>Medium (M) — 15%</option>
+          <option value="Q">Quartile (Q) — 25%</option>
+          <option value="H">High (H) — 30%</option>
+        </select>
+      </div>
+
+      <!-- Generate Button -->
+      <button class="gen-btn" onclick="generateQR()">⬡ Generate QR Code</button>
+    </div>
+
+    <!-- RIGHT CARD: Output Panel -->
+    <div class="card qr-panel">
+      <div class="card-label"><span class="dot"></span>Output</div>
+
+      <!-- Placeholder (shown before QR is generated) -->
+      <div class="qr-placeholder" id="placeholder">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+          <rect x="8" y="8" width="8" height="8" fill="currentColor"/>
+          <rect x="28" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+          <rect x="32" y="8" width="8" height="8" fill="currentColor"/>
+          <rect x="4" y="28" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+          <rect x="8" y="32" width="8" height="8" fill="currentColor"/>
+          <rect x="28" y="28" width="4" height="4" fill="currentColor"/>
+          <rect x="36" y="28" width="4" height="4" fill="currentColor"/>
+          <rect x="28" y="36" width="4" height="4" fill="currentColor"/>
+          <rect x="36" y="36" width="4" height="4" fill="currentColor"/>
+          <rect x="32" y="32" width="4" height="4" fill="currentColor"/>
+        </svg>
+        Your QR code will appear here
+      </div>
+
+      <!-- QR Output Box (hidden until generated) -->
+      <div id="qr-box">
+        <div id="qr-output"></div>
+        <div class="qr-meta" id="qr-meta"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <button class="download-btn" id="dl-png" onclick="downloadQR('png')">↓ Download PNG</button>
+      <button class="download-btn" id="dl-svg" onclick="downloadQR('svg')">↓ Download SVG</button>
+      <button class="download-btn" id="copy-btn" onclick="copyQR()">⊕ Copy to Clipboard</button>
+    </div>
+
+  </div><!-- end .container -->
+
+  <!-- Footer -->
+  <footer>
+    Built with QRCode.js &nbsp;·&nbsp; Works Offline &nbsp;·&nbsp; No Data Stored
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <!-- Our JS File (loaded LAST so HTML is ready) -->
+  <script src="script.js"></script>
+
+</body>
+</html>
