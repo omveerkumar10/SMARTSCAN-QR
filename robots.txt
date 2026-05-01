@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://omveerkumar10.github.io/SMARTSCAN-QR/sitemap.xml
